@@ -7,7 +7,7 @@ const ERROR_INTERNAL_SERVER = 500;
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ massage: err.message }));
+    .catch((err) => res.status(ERROR_INTERNAL_SERVER).send({ massage: err.message }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -41,8 +41,7 @@ module.exports.deleteCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
-  Card.findByIdAndUpdate(req.params.cardId,
-    { $addToSet: { likes: req.user._id } }, { new: true })
+  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (card) {
         return res.status(200).send({ data: card });
@@ -58,8 +57,7 @@ module.exports.likeCard = (req, res) => {
 };
 
 module.exports.removeLikeCard = (req, res) => {
-  Card.findByIdAndUpdate(req.params.cardId,
-    { $pull: { likes: req.user._id } }, { new: true })
+  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (card) {
         return res.status(200).send({ data: card });
