@@ -1,9 +1,13 @@
 const User = require('../models/user');
 
+const ERROR_NOT_FOUND = 404;
+const ERROR_BAD_REQUESR = 400;
+const ERROR_INTERNAL_SERVER = 500;
+
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ massage: err.message }));
+    .catch((err) => res.status(ERROR_INTERNAL_SERVER).send({ massage: err.message }));
 };
 
 module.exports.createUser = (req, res) => {
@@ -15,9 +19,9 @@ module.exports.createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ massage: 'Переданы некорректные данные' });
+        return res.status(ERROR_BAD_REQUESR).send({ massage: 'Переданы некорректные данные' });
       }
-      return res.status(500).send({ massage: err.message });
+      return res.status(ERROR_INTERNAL_SERVER).send({ massage: err.message });
     });
 };
 
@@ -27,48 +31,48 @@ module.exports.getUserId = (req, res) => {
       if (user) {
         return res.status(200).send({ data: user });
       }
-      return res.status(404).send({ massage: 'Пользователь с указанным id не найден.' });
+      return res.status(ERROR_NOT_FOUND).send({ massage: 'Пользователь с указанным id не найден.' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ massage: 'Переданы некорректные данные' });
+        return res.status(ERROR_BAD_REQUESR).send({ massage: 'Переданы некорректные данные' });
       }
-      return res.status(500).send({ massage: err.message });
+      return res.status(ERROR_INTERNAL_SERVER).send({ massage: err.message });
     });
 };
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
 
-  User.findByIdAndUpdate(req.params._id, { name, about }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (user) {
         return res.status(200).send({ data: user });
       }
-      return res.status(404).send({ massage: 'Пользователь с указанным id не найден.' });
+      return res.status(ERROR_NOT_FOUND).send({ massage: 'Пользователь с указанным id не найден.' });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ massage: 'Переданы некорректные данные' });
+        return res.status(ERROR_BAD_REQUESR).send({ massage: 'Переданы некорректные данные' });
       }
-      return res.status(500).send({ massage: err.message });
+      return res.status(ERROR_INTERNAL_SERVER).send({ massage: err.message });
     });
 };
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(req.params._id, { avatar }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (user) {
         return res.status(200).send({ data: user });
       }
-      return res.status(404).send({ massage: 'Пользователь с указанным id не найден.' });
+      return res.status(ERROR_NOT_FOUND).send({ massage: 'Пользователь с указанным id не найден.' });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(400).send({ massage: 'Переданы некорректные данные' });
+        return res.status(ERROR_BAD_REQUESR).send({ massage: 'Переданы некорректные данные' });
       }
-      return res.status(500).send({ massage: err.message });
+      return res.status(ERROR_INTERNAL_SERVER).send({ massage: err.message });
     });
 };
