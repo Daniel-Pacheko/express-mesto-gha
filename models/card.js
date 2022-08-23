@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
+const isURL = require('validator');
 
+// создаем Карточку
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
     require: true,
-    minlength: 2,
-    maxlength: 30,
+    minlenght: 2,
+    maxlenght: 30,
   },
   link: {
     type: String,
     require: true,
+    validate: {
+      validator: (url) => isURL(url),
+      message: 'Поле должно быть URL',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
