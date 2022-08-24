@@ -33,16 +33,16 @@ module.exports.createUser = ((req, res, next) => {
         .catch((err) => {
           if (err.name === 'ValidationError' || err.name === 'CastError') {
             throw new BadRequestError('Переданы некорректные данные для создания пользователя');
+          } else {
+            next(err);
           }
           if (err.name === 'MongoServerError' && err.code === 11000) {
             throw new ConflictError('Пользователь с указанным email уже существует');
           } else {
             next(err);
           }
-        })
-        .catch(next);
-    })
-    .catch(next);
+        });
+    });
 });
 
 module.exports.login = (req, res, next) => {
