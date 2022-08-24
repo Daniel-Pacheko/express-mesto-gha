@@ -36,10 +36,13 @@ module.exports.createUser = ((req, res, next) => {
           }
           if (err.name === 'MongoServerError' && err.code === 11000) {
             throw new ConflictError('Пользователь с указанным email уже существует');
+          } else {
+            next(err);
           }
         })
         .catch(next);
-    });
+    })
+    .catch(next);
 });
 
 module.exports.login = (req, res, next) => {
@@ -94,8 +97,9 @@ module.exports.getUserId = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -112,8 +116,9 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -130,7 +135,8 @@ module.exports.updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
